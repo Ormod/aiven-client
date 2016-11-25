@@ -565,6 +565,17 @@ class AivenCLI(argx.CommandLineTool):
 
     @arg.project
     @arg.service_name
+    @arg.topic
+    @arg("--format", help="Format string for output, e.g. '{name} {retention_hours}'")
+    @arg.json
+    def service_topic_get(self):
+        """Get Kafka topic inservice topics"""
+        service = self.client.get_service_topic(project=self.get_project(), service=self.args.name, topic=self.args.topic)
+        layout = [["partition", "size", "isr"]]  # Soon to be added: "latest_offset", "earliest_offset", "consumer_groups"]]
+        self.print_response(service["partitions"], format=self.args.format, json=self.args.json, table_layout=layout)
+
+    @arg.project
+    @arg.service_name
     @arg("--format", help="Format string for output, e.g. '{name} {retention_hours}'")
     @arg.json
     def service_topic_list(self):
